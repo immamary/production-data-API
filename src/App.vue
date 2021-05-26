@@ -1,29 +1,53 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+  <div class="container">
+    <div class="header">
+      <input type="file" @change="upload" ref="myFiles" />
+      <input type="button" value="Plot Chart" id="plot-chart" />
+      <hr />
+    </div>
+    <div class="content">
+      <div class="treeview">
+        <ul></ul>
+      </div>
+      <div class="chart">
+        <svg width="900" height="600"></svg>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import HelloWorld from "./components/HelloWorld.vue";
+import { ProcessExcelData } from "@/utils/readExcel";
 
 @Component({
-  components: {
-    HelloWorld,
-  },
+  components: {},
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  private upload(e: InputEvent) {
+    const file = e.target!.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      ProcessExcelData(reader.result);
+    };
+    reader.readAsText(file);
+  }
+}
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.content {
+  display: flex;
+  height: calc(100vh - 55px);
+}
+.treeview {
+  flex-basis: 250px;
+  background: rgb(233, 230, 230);
+}
+.chart {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
