@@ -24,13 +24,10 @@ import { ProcessExcelData } from "@/utils/readExcel";
   components: {},
 })
 export default class App extends Vue {
-  private upload(e: InputEvent) {
+  private async upload(e: InputEvent) {
     const file = e.target!.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      ProcessExcelData(reader.result);
-    };
-    reader.readAsText(file);
+    const buffer = await file.arrayBuffer();
+    ProcessExcelData(buffer);
   }
 }
 </script>
