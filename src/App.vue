@@ -19,15 +19,20 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { ProcessExcelData } from "@/utils/readExcel";
+import { excelAPI } from '@/utils/productionData';
 
 @Component({
   components: {},
 })
 export default class App extends Vue {
   private async upload(e: InputEvent) {
-    const file = e.target!.files[0];
-    const buffer = await file.arrayBuffer();
-    ProcessExcelData(buffer);
+    // const file = e.target!.files[0];
+    // const buffer = await file.arrayBuffer();
+    // ProcessExcelData(buffer);
+
+    // const excelRows = excelAPI.util.readExcel(buffer, );
+    // console.log(excelRows);
+    console.log(excelAPI.util.getColumnHeaders());
   }
 }
 </script>
