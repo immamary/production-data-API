@@ -1,5 +1,5 @@
 import xlsx from "xlsx";
-const columnHeaders = ['Drainage Point', 'Date', 'Oil', 'Gas', 'Water', 'Sand', 'Gas Injected', 'Water Injected', 'THP', 'Bean Size', 'Production Days', 'CHP', 'Production Type'] as const;
+import { columnHeaderMappings, columnHeaders, internalColumnHeader } from "./productionDataTypes";
 
 let mapping: columnHeaderMappings;
 
@@ -10,11 +10,6 @@ type ReadSheetResponse = {
 
 let productionDataContent: unknown[] = [];
 
-export type columnHeaderMappings = {
-    [x in internalColumnHeader]: string;
-};
-
-export type internalColumnHeader = typeof columnHeaders[number];
 
 export const productionDataAPI = {
     readSheet: (data: ArrayBuffer, userMapping: columnHeaderMappings): ReadSheetResponse => {
@@ -31,11 +26,11 @@ export const productionDataAPI = {
         return { success: true, message: 'Read Successfully' };
     },
 
-    getVariable(variableName: internalColumnHeader) {
-        console.log(variableName);
-    },
-
     getColumnHeaders() {
         return columnHeaders;
+    },
+
+    getVariable(variableName: internalColumnHeader) {
+        const sheetColumnHeader = mapping[variableName];
     }
 };

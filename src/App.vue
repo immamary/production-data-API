@@ -19,10 +19,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { ProcessExcelData } from "@/utils/readExcel";
-import {
-  productionDataAPI,
-  columnHeaderMappings,
-} from "@/utils/productionData";
+import { columnHeaderMappings, productionDataAPI } from '@/businessLogic/productionData';
 
 @Component({
   components: {},
