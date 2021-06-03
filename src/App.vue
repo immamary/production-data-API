@@ -19,7 +19,10 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { ProcessExcelData } from "@/utils/readExcel";
-import { columnHeaderMappings, productionDataAPI } from '@/businessLogic/productionData';
+import {
+  columnHeaderMappings,
+  productionDataAPI,
+} from "@/businessLogic/productionData";
 
 @Component({
   components: {},
@@ -47,7 +50,6 @@ export default class App extends Vue {
     };
 
     const result = productionDataAPI.readSheet(buffer, mapping);
-    console.log(result);
     console.log(productionDataAPI.getColumnHeaders());
   }
 }
