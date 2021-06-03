@@ -11,7 +11,7 @@ describe('productionDataAPI', () => {
 
         mapping = {
             "Drainage Point": "UNIQUEID",
-            Date: "",
+            Date: "DATE",
             Oil: "",
             CHP: "",
             THP: "",
