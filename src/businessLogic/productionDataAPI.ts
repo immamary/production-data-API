@@ -16,8 +16,8 @@ type ReadSheetResponse = {
 type GetVariableResponse = {
   wasSuccessful: boolean;
   message: string;
-  data?: ProductionDataRow[]
-}
+  data?: ProductionDataRow[];
+};
 
 let productionDataContent: any[] = [];
 let hasReadSheet: boolean = false;
@@ -33,7 +33,10 @@ export const productionDataAPI = {
       (sheetName: string) => sheetName == "Production Data"
     );
     if (productionDataSheetName == undefined) {
-      return { wasSuccessful: false, message: "No Production Data Sheet found" };
+      return {
+        wasSuccessful: false,
+        message: "No Production Data Sheet found",
+      };
     }
 
     const productionDataSheet = workbook.Sheets[productionDataSheetName];
@@ -48,56 +51,61 @@ export const productionDataAPI = {
   },
 
   getVariable(variableName: internalColumnHeader): GetVariableResponse {
-    if(!hasReadSheet && mapping != undefined){
+    if (!hasReadSheet && mapping != undefined) {
       return {
         wasSuccessful: false,
-        message: 'No sheet read'
-      }
+        message:
+          "Sheet has not been read or mapping does not match any column header",
+      };
     }
 
     const sheetColumnHeader = mapping[variableName];
     if (sheetColumnHeader == undefined) {
       return {
         wasSuccessful: false,
-        message: 'Sheet column header not found'
-      }
+        message: "Sheet column header not found",
+      };
     }
 
-    const variables = productionDataContent.map(row => {
-      return { [variableName.convertColumnToProperty()]: row[sheetColumnHeader] } as ProductionDataRow
+    const variables = productionDataContent.map((row) => {
+      return {
+        [variableName.convertColumnToProperty()]: row[sheetColumnHeader],
+      } as ProductionDataRow;
     });
 
     return {
       wasSuccessful: true,
-      message: 'Got Variables',
-      data: variables
+      message: "Got Variables",
+      data: variables,
     };
   },
 
   getVariables(variables: internalColumnHeader[]): GetVariableResponse {
-    if(!hasReadSheet && mapping != undefined){
+    if (!hasReadSheet && mapping != undefined) {
       return {
         wasSuccessful: false,
-        message: 'No sheet read'
-      }
+        message:
+          "Sheet has not been read or mapping does not match any column header",
+      };
     }
 
-    const sheetColumnHeaders = variables.map(variable => {
+    const sheetColumnHeaders = variables.map((variable) => {
       return mapping[variable];
     });
 
-    if(sheetColumnHeaders.findIndex(header => header == undefined) != -1){
+    if (sheetColumnHeaders.findIndex((header) => header == undefined) != -1) {
       return {
         wasSuccessful: false,
-        message: 'Sheet column header not found for one of the variables'
-      }
+        message: "Sheet column header not found for one of the variables",
+      };
     }
 
-    const variableColumns = productionDataContent.map(row => {
+    const variableColumns = productionDataContent.map((row) => {
       let variableColumn: { [key: string]: any } = {} as ProductionDataRow;
-      for(let index = 0; index < sheetColumnHeaders.length; index++ ){
+      for (let index = 0; index < sheetColumnHeaders.length; index++) {
         let columnHeader = sheetColumnHeaders[index];
-        variableColumn[variables[index].convertColumnToProperty()] = row[columnHeader];
+        variableColumn[variables[index].convertColumnToProperty()] =
+          row[columnHeader];
       }
 
       return variableColumn;
@@ -105,9 +113,8 @@ export const productionDataAPI = {
 
     return {
       wasSuccessful: true,
-      message: 'Got Variables',
-      data: variableColumns
+      message: "Got Variables",
+      data: variableColumns,
     };
   },
-}
-
+};
