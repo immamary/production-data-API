@@ -48,7 +48,7 @@ export const productionDataAPI = {
   },
 
   getVariable(variableName: internalColumnHeader): GetVariableResponse {
-    if(!hasReadSheet){
+    if(!hasReadSheet && mapping != undefined){
       return {
         wasSuccessful: false,
         message: 'No sheet read'
@@ -75,7 +75,7 @@ export const productionDataAPI = {
   },
 
   getVariables(variables: internalColumnHeader[]): GetVariableResponse {
-    if(!hasReadSheet){
+    if(!hasReadSheet && mapping != undefined){
       return {
         wasSuccessful: false,
         message: 'No sheet read'

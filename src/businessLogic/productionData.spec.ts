@@ -12,7 +12,7 @@ describe('productionDataAPI', () => {
 
         mapping = {
             "Drainage Point": "UNIQUEID",
-            Date: "DATE",
+            Date: "Date",
             Oil: "MonthlyOIL (stb)",
             CHP: "CHP",
             THP: "THP (psia)",
@@ -50,8 +50,10 @@ describe('productionDataAPI', () => {
     });
 
     it('should fetch a number of variables', () => {
-        const variableTypes: internalColumnHeader[] = ["Drainage Point", "Oil"];
+        const variableTypes: internalColumnHeader[] = ["Drainage Point", "Oil", "Date"];
         const getVariablesResponse = productionDataAPI.getVariables(variableTypes);
+
+        console.log(getVariablesResponse);
 
         expect(getVariablesResponse.wasSuccessful).toBe(true);
         expect(getVariablesResponse.data!.length).toBeGreaterThan(0);
