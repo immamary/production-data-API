@@ -3,19 +3,27 @@ import {
   columnHeaderMappings,
   columnHeaders,
   internalColumnHeader,
+  ProductionDataRow,
 } from "./productionDataTypes";
 
 let mapping: columnHeaderMappings;
 
 type ReadSheetResponse = {
-  success: boolean;
+  wasSuccessful: boolean;
   message: string;
 };
 
-let productionDataContent: unknown[] = [];
+type GetVariableResponse = {
+  wasSuccessful: boolean;
+  message: string;
+  data?: ProductionDataRow[]
+}
+
+let productionDataContent: any[] = [];
+let hasReadSheet: boolean = false;
 
 export const productionDataAPI = {
-  readSheet (
+  readSheet(
     data: ArrayBuffer,
     userMapping: columnHeaderMappings
   ): ReadSheetResponse {
@@ -25,20 +33,81 @@ export const productionDataAPI = {
       (sheetName: string) => sheetName == "Production Data"
     );
     if (productionDataSheetName == undefined) {
-      return { success: false, message: "No Production Data Sheet found" };
+      return { wasSuccessful: false, message: "No Production Data Sheet found" };
     }
 
     const productionDataSheet = workbook.Sheets[productionDataSheetName];
 
     productionDataContent = xlsx.utils.sheet_to_json(productionDataSheet);
-    return { success: true, message: "Read Successfully" };
+    hasReadSheet = true;
+    return { wasSuccessful: true, message: "Read Successfully" };
   },
 
   getColumnHeaders() {
     return columnHeaders;
   },
 
-  getVariable(variableName: internalColumnHeader) {
+  getVariable(variableName: internalColumnHeader): GetVariableResponse {
+    if(!hasReadSheet){
+      return {
+        wasSuccessful: false,
+        message: 'No sheet read'
+      }
+    }
+
     const sheetColumnHeader = mapping[variableName];
+    if (sheetColumnHeader == undefined) {
+      return {
+        wasSuccessful: false,
+        message: 'Sheet column header not found'
+      }
+    }
+
+    const variables = productionDataContent.map(row => {
+      return { [variableName.convertColumnToProperty()]: row[sheetColumnHeader] } as ProductionDataRow
+    });
+
+    return {
+      wasSuccessful: true,
+      message: 'Got Variables',
+      data: variables
+    };
   },
-};
+
+  getVariables(variables: internalColumnHeader[]): GetVariableResponse {
+    if(!hasReadSheet){
+      return {
+        wasSuccessful: false,
+        message: 'No sheet read'
+      }
+    }
+
+    const sheetColumnHeaders = variables.map(variable => {
+      return mapping[variable];
+    });
+
+    if(sheetColumnHeaders.findIndex(header => header == undefined) != -1){
+      return {
+        wasSuccessful: false,
+        message: 'Sheet column header not found for one of the variables'
+      }
+    }
+
+    const variableColumns = productionDataContent.map(row => {
+      let variableColumn: { [key: string]: any } = {} as ProductionDataRow;
+      for(let index = 0; index < sheetColumnHeaders.length; index++ ){
+        let columnHeader = sheetColumnHeaders[index];
+        variableColumn[variables[index].convertColumnToProperty()] = row[columnHeader];
+      }
+
+      return variableColumn;
+    });
+
+    return {
+      wasSuccessful: true,
+      message: 'Got Variables',
+      data: variableColumns
+    };
+  },
+}
+

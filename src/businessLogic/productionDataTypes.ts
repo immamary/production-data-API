@@ -1,3 +1,8 @@
+declare global {
+  interface String {
+    convertColumnToProperty(): string;
+  }
+}
 export const columnHeaders = [
   "Drainage Point",
   "Date",
@@ -19,3 +24,24 @@ export type columnHeaderMappings = {
 };
 
 export type internalColumnHeader = typeof columnHeaders[number];
+
+
+export interface ProductionDataRow {
+  DrainagePoint?: string
+  Date?: string
+  Oil?: number,
+  Gas?: number,
+  Water?: number,
+  Sand?: number,
+  GasInjected?: number,
+  WaterInjected?: number,
+  THP?: number,
+  BeanSize?: number,
+  ProductionDays?: number,
+  CHP?: number,
+  ProductionType?: string,
+}
+
+String.prototype.convertColumnToProperty = function () {
+  return `${this.replace(/\s/g, '')}`;
+}
