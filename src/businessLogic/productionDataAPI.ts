@@ -4,6 +4,7 @@ import {
   columnHeaders,
   internalColumnHeader,
   ProductionDataRow,
+  filter,
 } from "./productionDataTypes";
 
 let mapping: columnHeaderMappings;
@@ -115,6 +116,40 @@ export const productionDataAPI = {
       wasSuccessful: true,
       message: "Got Variables",
       data: variableColumns,
+    };
+  },
+  getVariableAndFilter(
+    variableName: internalColumnHeader,
+    cb: filter
+  ): GetVariableResponse {
+    if (!hasReadSheet && mapping != undefined) {
+      return {
+        wasSuccessful: false,
+        message:
+          "Sheet has not been read or mapping does not match any column header",
+      };
+    }
+
+    const sheetColumnHeader = mapping[variableName];
+    if (sheetColumnHeader == undefined) {
+      return {
+        wasSuccessful: false,
+        message: "Sheet column header not found",
+      };
+    }
+    const data = productionDataContent.filter(cb);
+    console.log(data);
+
+    const variables = data.map((row: any) => {
+      return {
+        [variableName.convertColumnToProperty()]: row[sheetColumnHeader],
+      } as ProductionDataRow;
+    });
+
+    return {
+      wasSuccessful: true,
+      message: "Got Variables",
+      data: variables,
     };
   },
 };

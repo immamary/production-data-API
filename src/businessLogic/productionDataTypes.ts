@@ -42,6 +42,8 @@ export interface ProductionDataRow {
   ProductionType?: string,
 }
 
+export type filter = (variableName: ProductionDataRow) => boolean;
+
 String.prototype.convertColumnToProperty = function () {
   return `${this.replace(/\s/g, '')}`;
 }
